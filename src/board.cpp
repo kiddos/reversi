@@ -147,7 +147,7 @@ bool Board::changeturn() {
   return true;
 }
 
-void Board::copyboard(int b[BOARDSIZE][BOARDSIZE]) {
+void Board::copyboard(int b[BOARDSIZE][BOARDSIZE]) const {
   for (int i = 0 ; i < BOARDSIZE ; ++i) {
     for (int j = 0 ; j < BOARDSIZE ; ++j) {
       b[i][j] = board[i][j];
@@ -194,6 +194,20 @@ int Board::getblackcount() const {
     }
   }
   return blackcount;
+}
+
+int Board::getturn() const {
+  return turn;
+}
+
+bool Board::isfull() const {
+  for (int i = 0 ; i < BOARDSIZE ; ++i) {
+    for (int j = 0 ; j < BOARDSIZE ; ++j) {
+      if (board[i][j] == Board::EMPTY)
+        return false;
+    }
+  }
+  return true;
 }
 
 }
