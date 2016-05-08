@@ -60,8 +60,8 @@ void AI::toinput(const Board b, const Move m, const int turn, int data[66]) {
   }
 
   // last 2 nodes is next move
-  data[INPUT_NODES-3] = m.x;
-  data[INPUT_NODES-2] = m.y;
+  data[INPUT_NODES-2] = m.x;
+  data[INPUT_NODES-1] = m.y;
 }
 
 }
