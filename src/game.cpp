@@ -57,7 +57,8 @@ bool Game::airespond() {
 }
 
 bool Game::isgameover() {
-  over = board.isfull();
+  if (!over)
+    over = board.isfull();
   return over;
 }
 
@@ -120,6 +121,12 @@ void Game::saverecords(bool readable) const {
       output << endl;
     }
     output.close();
+  }
+}
+
+void Game::quicksimulate() {
+  while (!isgameover()) {
+    airespond();
   }
 }
 

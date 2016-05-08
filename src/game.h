@@ -31,6 +31,7 @@ class Game {
   bool playerinput(const Move m);
   bool airespond();
   bool isgameover();
+  void quicksimulate();
   void saverecords(bool readable=true) const;
   int getwinner() const;
   Board getboard() const;
