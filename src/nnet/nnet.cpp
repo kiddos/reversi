@@ -7,14 +7,35 @@ using std::cout;
 using std::endl;
 #endif
 
+#define EPS 1e-4
+
 using std::vector;
 
 namespace nn {
 
+NeuralNet::NeuralNet() : eps(EPS) {}
+
 NeuralNet::NeuralNet(const InputLayer input, const OutputLayer output,
-                     vector<Layer> hidden) :
-                     eps(1e-4), cost(output.getcost()), costd(output.getcostd()),
-                     input(input), hidden(hidden), output(output) {}
+                     vector<Layer> hidden)
+    : eps(EPS), cost(output.getcost()), costd(output.getcostd()),
+      input(input), hidden(hidden), output(output) {}
+
+NeuralNet::NeuralNet(const NeuralNet& nnet)
+    : eps(EPS), x(nnet.x), y(nnet.y), result(nnet.result),
+      cost(nnet.cost), costd(nnet.costd),
+      input(nnet.input), hidden(nnet.hidden), output(nnet.output) {}
+
+NeuralNet& NeuralNet::operator= (const NeuralNet& nnet) {
+  x = nnet.x;
+  y = nnet.y;
+  result = nnet.result;
+  cost = nnet.cost;
+  costd = nnet.costd;
+  input = nnet.input;
+  hidden = nnet.hidden;
+  output = nnet.output;
+  return *this;
+}
 
 void NeuralNet::feeddata(const mat x, const mat y, const bool check) {
   this->x = x;
@@ -254,3 +275,5 @@ mat NeuralNet::computengrad(const int nrows, const int ncols, const int idx) {
 }
 
 }
+
+#undef EPS

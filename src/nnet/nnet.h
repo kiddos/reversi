@@ -10,11 +10,16 @@ namespace nn {
 
 class NeuralNet {
  public:
+  NeuralNet();
   NeuralNet(const InputLayer input, const OutputLayer output,
             std::vector<Layer> layers);
+  NeuralNet(const NeuralNet& nnet);
+  NeuralNet& operator= (const NeuralNet& nnet);
+
   void feeddata(const mat x, const mat y, const bool check);
   mat predict(const mat sample);
   double computecost();
+
   mat getresult() const;
   InputLayer getinput() const;
   Layer gethidden(const uint32_t index) const;
