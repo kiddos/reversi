@@ -28,10 +28,12 @@ class Board {
   bool perform(const Move m);
   bool changeturn();
 
-  void copyboard(int board[BOARDSIZE][BOARDSIZE]);
+  void copyboard(int board[BOARDSIZE][BOARDSIZE]) const;
   void quickdisplay() const;
   int getblackcount() const;
   int getwhitecount() const;
+  int getturn() const;
+  bool isfull() const;
 
   static const int WHITE, BLACK, EMPTY;
   static const int DELTA[NDIRECT][2];
