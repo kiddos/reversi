@@ -255,6 +255,9 @@ bool Window::mainloop() {
           cout << "black: " << black << endl;
           cout << "white: " << white << endl;
 #endif
+          game.saverecords();
+          game.saverecords(false);
+          break;
         }
       }
     }
