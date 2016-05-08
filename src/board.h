@@ -13,6 +13,7 @@ struct Move {
   Move() : x(0), y(0) {}
   Move(int x, int y) : x(x), y(y) {}
   Move operator+(const int delta[2]) const {return Move(x+delta[0], y+delta[1]);}
+  Move operator+(const Move m) const {return Move(x+m.x, y+m.y);}
 };
 
 class Board {
@@ -22,9 +23,9 @@ class Board {
   Board(const Board& board);
   Board& operator= (const Board& b);
 
-  bool isvalidmove(const Move m);
-  bool isvalidmove(const Move m, const int delta[2]);
-  std::vector<Move> getvalidmoves();
+  bool isvalidmove(const Move m) const;
+  bool isvalidmove(const Move m, const int delta[2]) const;
+  std::vector<Move> getvalidmoves() const;
   bool perform(const Move m);
   bool changeturn();
 

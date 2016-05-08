@@ -66,15 +66,14 @@ bool Board::inrange(const Move m) const {
   return true;
 }
 
-bool Board::isvalidmove(const Move m) {
-
+bool Board::isvalidmove(const Move m) const {
   for (int i = 0 ; i < NDIRECT ; ++i) {
     if (isvalidmove(m, DELTA[i])) return true;
   }
   return false;
 }
 
-bool Board::isvalidmove(const Move m, const int delta[2]) {
+bool Board::isvalidmove(const Move m, const int delta[2]) const {
   if (!inrange(m) || BOARD(m) != EMPTY)
     return false;
 
@@ -91,7 +90,7 @@ bool Board::isvalidmove(const Move m, const int delta[2]) {
   return false;
 }
 
-vector<Move> Board::getvalidmoves() {
+vector<Move> Board::getvalidmoves() const {
   vector<Move> moves;
   for (int i = 0 ; i < BOARDSIZE ; ++i) {
     for (int j = 0 ; j < BOARDSIZE; ++j) {
