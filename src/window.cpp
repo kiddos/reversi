@@ -245,7 +245,7 @@ bool Window::mainloop() {
         if (game.playerinput(mouse.getmove())) {
           // AI decision
           // may take long
-          game.airespond();
+          game.airespond(true);
         }
 
         if (game.isgameover()) {
