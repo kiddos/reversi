@@ -29,9 +29,9 @@ class Game {
   Game& operator= (const Game& game);
 
   bool playerinput(const Move m);
-  bool airespond();
+  bool airespond(bool smart=false);
   bool isgameover();
-  void quicksimulate();
+  void quicksimulate(bool smart=false);
   void saverecords(bool readable=true) const;
   int getwinner() const;
   Board getboard() const;

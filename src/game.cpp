@@ -39,8 +39,8 @@ bool Game::playerinput(const Move m) {
   }
 }
 
-bool Game::airespond() {
-  Move m = ai.decidemove(board);
+bool Game::airespond(bool smart) {
+  Move m = ai.decidemove(board, smart);
   if (board.isvalidmove(m)) {
     // add record
     Record r(board, m, board.getturn());
@@ -124,9 +124,9 @@ void Game::saverecords(bool readable) const {
   }
 }
 
-void Game::quicksimulate() {
+void Game::quicksimulate(bool smart) {
   while (!isgameover()) {
-    airespond();
+    airespond(smart);
   }
 }
 
