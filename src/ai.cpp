@@ -94,7 +94,9 @@ Move AI::decidemove(const Board current, bool smart, bool output) {
         maxindex = i;
       }
     }
-    cout << prediction << endl;
+#ifdef DEBUG
+    cout << result << endl;
+#endif
 
     return moves[maxindex];
   } else {
