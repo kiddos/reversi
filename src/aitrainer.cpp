@@ -31,11 +31,11 @@ void AITrainer::train(const int ninstances, const int iterations) {
     mat *data = new mat[nprocess];
     mat *label = new mat[nprocess];
     // prepare data
-#pragma omp parallel for default(none) shared(data, label)
+//#pragma omp parallel for default(none) shared(data, label)
     for (int p = 0 ; p < nprocess ; ++p) {
       Game game = games[p];
       // simulate the game
-      game.quicksimulate();
+      game.quicksimulate(true);
 
       const int winner = game.getwinner();
       vector<Record> records = game.getrecords();
@@ -65,6 +65,12 @@ void AITrainer::train(const int ninstances, const int iterations) {
     // training
     unsigned long total = 0;
     for (int p = 0 ; p < nprocess ; ++p) {
+#ifdef DEBUG
+      const mat result = nnet.predict(data[p]);
+      const double accuracy = testaccuracy(result, label[p]);
+      cout << endl << "accuracy: " << accuracy << endl;
+#endif
+
       for (int i = 0 ; i < iterations ; ++i) {
         nnet.feeddata(data[p], label[p], false);
         total ++;
@@ -77,12 +83,12 @@ void AITrainer::train(const int ninstances, const int iterations) {
 
 #ifdef DEBUG
       if (total % data[p].n_rows == 0) {
-        cout << "\rinstance: " << p << " | " << data[p].n_rows << " samples"
+        cout << endl << "instance: " << p << " | " << data[p].n_rows << " samples"
             << " | iteration: " << total
             << " | cost: " << nnet.computecost() << endl;
         const mat result = nnet.predict(data[p]);
         const double accuracy = testaccuracy(result, label[p]);
-        cout << "accuracy: " << accuracy << endl;
+        cout << endl << "accuracy: " << accuracy << endl;
       }
 #endif
     }
