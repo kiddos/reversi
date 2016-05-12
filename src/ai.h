@@ -24,6 +24,7 @@ class AI {
   static nn::NeuralNet getmodel();
 
   static void toinput(const Board b, const Move m, const int turn, int data[66]);
+  static bool loadparam(nn::NeuralNet& nnet);
 
  private:
   Board current;

@@ -27,36 +27,7 @@ AI::AI() {
   loaded = false;
 
   nnet = getmodel();
-  ifstream input(AI_PARAM_PATH, std::ios::in);
-  if (input.is_open()) {
-#ifdef DEBUG
-    cout << "loading model..." << endl;
-#endif
-
-    for (int i = 0 ; i < HIDDEN_LAYERS ; ++i) {
-      mat w = nnet.gethidden(i).getw();
-      for (uint32_t j = 0 ; j < w.n_rows ; ++j) {
-        for (uint32_t k = 0 ; k < w.n_cols ; ++k) {
-          double val = 0;
-          input >> val;
-          w(j, k) = val;
-          nnet.gethidden(i).setw(w);
-        }
-      }
-    }
-    mat w = nnet.getoutput().getw();
-    for (uint32_t j = 0 ; j < w.n_rows ; ++j) {
-      for (uint32_t k = 0 ; k < w.n_cols ; ++k) {
-        double val = 0;
-        input >> val;
-        w(j, k) = val;
-      }
-    }
-    nnet.getoutput().setw(w);
-
-    loaded = true;
-    input.close();
-  }
+  loaded = loadparam(nnet);
 }
 
 AI::AI(const AI& ai) : current(ai.current) {}
@@ -144,6 +115,40 @@ void AI::toinput(const Board b, const Move m, const int turn, int data[66]) {
   // last 2 nodes is next move
   data[INPUT_NODES-2] = m.x;
   data[INPUT_NODES-1] = m.y;
+}
+
+bool AI::loadparam(NeuralNet& nnet) {
+  ifstream input(AI_PARAM_PATH, std::ios::in);
+  if (input.is_open()) {
+#ifdef DEBUG
+    cout << "loading model..." << endl;
+#endif
+
+    for (int i = 0 ; i < HIDDEN_LAYERS ; ++i) {
+      mat w = nnet.gethidden(i).getw();
+      for (uint32_t j = 0 ; j < w.n_rows ; ++j) {
+        for (uint32_t k = 0 ; k < w.n_cols ; ++k) {
+          double val = 0;
+          input >> val;
+          w(j, k) = val;
+          nnet.gethidden(i).setw(w);
+        }
+      }
+    }
+    mat w = nnet.getoutput().getw();
+    for (uint32_t j = 0 ; j < w.n_rows ; ++j) {
+      for (uint32_t k = 0 ; k < w.n_cols ; ++k) {
+        double val = 0;
+        input >> val;
+        w(j, k) = val;
+      }
+    }
+    nnet.getoutput().setw(w);
+
+    input.close();
+    return true;
+  }
+  return false;
 }
 
 }

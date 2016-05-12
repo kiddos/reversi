@@ -23,6 +23,7 @@ AITrainer::AITrainer() {
   }
 
   nnet = AI::getmodel();
+  AI::loadparam(nnet);
 }
 
 
