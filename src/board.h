@@ -33,6 +33,7 @@ class Board {
   void quickdisplay() const;
   int getblackcount() const;
   int getwhitecount() const;
+  int gettotalcount() const;
   int getturn() const;
   bool isfull() const;
 

@@ -195,6 +195,18 @@ int Board::getblackcount() const {
   return blackcount;
 }
 
+int Board::gettotalcount() const {
+  int total = 0;
+  for (int i = 0 ; i < BOARDSIZE ; ++i) {
+    for (int j = 0 ; j < BOARDSIZE ; ++j) {
+      if (board[i][j] != Board::EMPTY) {
+        total ++;
+      }
+    }
+  }
+  return total;
+}
+
 int Board::getturn() const {
   return turn;
 }
