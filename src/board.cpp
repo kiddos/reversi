@@ -81,10 +81,10 @@ bool Board::isvalidmove(const Move m, const int delta[2]) const {
   if (inrange(newm) && BOARD(newm) == OPPOSITE(turn)) {
     for (int j = 0 ; j < BOARDSIZE ; ++j) {
       newm = newm + delta;
-      if (inrange(newm) && BOARD(newm) == turn)
-        return true;
-      else if (inrange(newm) && BOARD(newm) == EMPTY)
+      if (inrange(newm) && BOARD(newm) == EMPTY)
         return false;
+      else if (inrange(newm) && BOARD(newm) == turn)
+        return true;
     }
   }
   return false;
