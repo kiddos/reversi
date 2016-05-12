@@ -23,6 +23,7 @@ AITrainer::AITrainer() {
   }
 
   nnet = AI::getmodel();
+  AI::loadparam(nnet);
 }
 
 
@@ -52,8 +53,10 @@ void AITrainer::train(const int ninstances, const int iterations) {
         }
         delete input;
 
-        const int labelindex = (winner == records[j].turn) ? 1 : 0;
-        traininglabel(j, labelindex) = 1;
+        double val = 0;
+        if (winner == records[j].turn) val = records[j].state.gettotalcount();
+        else val = -records[j].state.gettotalcount();
+        traininglabel(j, 0) = val;
       }
 
       data[p] = trainingdata;
@@ -67,8 +70,7 @@ void AITrainer::train(const int ninstances, const int iterations) {
     for (int p = 0 ; p < nprocess ; ++p) {
 #ifdef DEBUG
       const mat result = nnet.predict(data[p]);
-      const double accuracy = testaccuracy(result, label[p]);
-      cout << endl << "accuracy: " << accuracy << endl;
+      //cout << endl << "cost: " << nnet.computecost() << endl;
 #endif
 
       for (int i = 0 ; i < iterations ; ++i) {
@@ -86,9 +88,6 @@ void AITrainer::train(const int ninstances, const int iterations) {
         cout << endl << "instance: " << p << " | " << data[p].n_rows << " samples"
             << " | iteration: " << total
             << " | cost: " << nnet.computecost() << endl;
-        const mat result = nnet.predict(data[p]);
-        const double accuracy = testaccuracy(result, label[p]);
-        cout << endl << "accuracy: " << accuracy << endl;
       }
 #endif
     }
