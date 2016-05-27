@@ -54,7 +54,7 @@ int main(void) {
   b4.quickdisplay();
 
   int config3[8][8];
-  b4.copyboard(config3);
+  b4.copyto(config3);
 
   Board b5(config3);
   b5.quickdisplay();
