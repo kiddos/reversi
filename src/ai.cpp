@@ -17,7 +17,7 @@ using nn::mat;
 
 namespace reversi {
 
-const int AI::INPUT_NODES = 66;
+const int AI::INPUT_NODES = 64;
 const int AI::HIDDEN_LAYERS = 3;
 const int AI::OUTPUT_NODES = 1;
 const string AI::AI_PARAM_PATH = "./ai.param";
@@ -37,7 +37,7 @@ AI& AI::operator= (const AI& ai) {
   return *this;
 }
 
-Move AI::decidemove(const Board current, bool smart, bool output) {
+Move AI::decidemove(const Board& current, bool smart, bool output) {
   this->current = current;
   vector<Move> moves = this->current.getvalidmoves();
 
@@ -45,30 +45,18 @@ Move AI::decidemove(const Board current, bool smart, bool output) {
     return Move(-1, -1);
   }
 
-  if (smart && loaded) {
-    mat samplemoves(moves.size(), INPUT_NODES);
-    for (uint32_t i = 0 ; i < moves.size() ; ++i) {
-      int *input = new int[INPUT_NODES];
-      toinput(current, moves[i], current.getturn(), input);
-      for (int j = 0 ; j < INPUT_NODES ; ++j) {
-        samplemoves(i, j) = input[j];
-      }
-      delete input;
-    }
-    const mat prediction = nnet.predict(samplemoves);
-    int maxindex = 0;
-    double maxval = prediction(0, 1);
-    for (uint32_t i = 1 ; i < prediction.n_rows ; ++i) {
-      if (prediction(i, 1) > maxval) {
-        maxval = prediction(i, 1);
-        maxindex = i;
-      }
-    }
+  if (smart) {
+    int whichmove = 0;
+    const double minval = minimax(current, whichmove, 6);
+    Move m = moves[whichmove];
+
 #ifdef DEBUG
-    cout << prediction << endl;
+    if (output)
+      cout << "ai choose: " << minval <<
+          "(" << m.x << "," << m.y << ")" << endl;
 #endif
 
-    return moves[maxindex];
+    return m;
   } else {
     const int index = rand() % moves.size();
     Move move = moves[index];
@@ -79,6 +67,56 @@ Move AI::decidemove(const Board current, bool smart, bool output) {
 
     return move;
   }
+}
+
+double AI::minimax(const Board& b, int& whichmove, int level) {
+  if (level <= 0) {
+    vector<Move> validmoves = b.getvalidmoves();
+    if (validmoves.size() > 0) {
+      Move m = validmoves[0];
+      Board simboard = b;
+      simboard.perform(m);
+      const Board target = simboard;
+      whichmove = 0;
+      double minval = eval(target);
+
+      for (uint32_t i = 1 ; i < validmoves.size() ; ++i) {
+        m = validmoves[i];
+        simboard = b;
+        simboard.perform(m);
+        double val = eval(simboard);
+        if (val < minval) {
+          minval = val;
+          whichmove = i;
+        }
+      }
+      return minval;
+    }
+  } else {
+    vector<Move> validmoves = b.getvalidmoves();
+    if (validmoves.size() > 0) {
+      Board simboard = b;
+      Move m = validmoves[0];
+      simboard.perform(m);
+      int nextmove = 0;
+      double minval = minimax(simboard, nextmove, level-1);
+      whichmove = 0;
+
+      for (uint32_t i = 1 ; i < validmoves.size() ; ++i) {
+        simboard = b;
+        m = validmoves[0];
+        simboard.perform(m);
+        const double val = minimax(simboard, nextmove, level-1);
+        if (val < minval) {
+          whichmove = i;
+          minval = val;
+        }
+      }
+      return minval;
+    }
+    return 0;
+  }
+  return eval(b);
 }
 
 NeuralNet AI::getmodel() {
@@ -95,10 +133,10 @@ NeuralNet AI::getmodel() {
   return nnet;
 }
 
-void AI::toinput(const Board b, const Move m, const int turn, int data[66]) {
+void AI::toinput(const Board& b, const int turn, int data[64]) {
   // first 64 nodes are board state
   int board[BOARDSIZE][BOARDSIZE] = {{0}};
-  b.copyboard(board);
+  b.copyto(board);
   for (int i = 0 ; i < BOARDSIZE ; ++i) {
     for (int j = 0 ; j < BOARDSIZE ; ++j) {
       if (board[i][j] == turn) {
@@ -110,10 +148,6 @@ void AI::toinput(const Board b, const Move m, const int turn, int data[66]) {
       }
     }
   }
-
-  // last 2 nodes is next move
-  data[INPUT_NODES-2] = m.x;
-  data[INPUT_NODES-1] = m.y;
 }
 
 bool AI::loadparam(nn::NeuralNet& nnet) {
@@ -148,6 +182,10 @@ bool AI::loadparam(nn::NeuralNet& nnet) {
     return true;
   }
   return false;
+}
+
+double AI::eval(const Board& b) {
+  return b.eval();
 }
 
 }

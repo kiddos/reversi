@@ -19,7 +19,7 @@ struct Move {
 class Board {
  public:
   Board();
-  Board(int config[BOARDSIZE][BOARDSIZE]);
+  explicit Board(int config[BOARDSIZE][BOARDSIZE]);
   Board(const Board& board);
   Board& operator= (const Board& b);
 
@@ -28,8 +28,9 @@ class Board {
   std::vector<Move> getvalidmoves() const;
   bool perform(const Move m);
   bool changeturn();
+  double eval() const;
 
-  void copyboard(int board[BOARDSIZE][BOARDSIZE]) const;
+  void copyto(int board[BOARDSIZE][BOARDSIZE]) const;
   void quickdisplay() const;
   int getblackcount() const;
   int getwhitecount() const;
@@ -45,6 +46,7 @@ class Board {
 
   int board[BOARDSIZE][BOARDSIZE];
   int turn;
+
 };
 
 } /* end of reversi namespace */

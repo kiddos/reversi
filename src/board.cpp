@@ -146,7 +146,45 @@ bool Board::changeturn() {
   return true;
 }
 
-void Board::copyboard(int b[BOARDSIZE][BOARDSIZE]) const {
+double Board::eval() const {
+  double score = 0;
+  const double large = 100;
+  const double medium = 10;
+  const double small = 1;
+
+  if (board[0][0] == turn) score += large;
+  else if (board[0][0] == OPPOSITE(turn)) score -= large;
+
+  if (board[BOARDSIZE-1][0] == turn) score += large;
+  else if (board[BOARDSIZE-1][0] == OPPOSITE(turn)) score -= large;
+
+  if (board[0][BOARDSIZE-1] == turn) score += large;
+  else if (board[BOARDSIZE-1][0] == OPPOSITE(turn)) score -= large;
+
+  if (board[BOARDSIZE-1][BOARDSIZE-1] == turn) score += large;
+  else if (board[BOARDSIZE-1][0] == OPPOSITE(turn)) score -= large;
+
+  for (int i = 1 ; i < BOARDSIZE-2 ; ++i) {
+    if (board[1][i] == turn) score -= medium;
+    else if (board[1][i] == OPPOSITE(turn)) score += medium;
+    if (board[i][1] == turn) score -= medium;
+    else if (board[i][1] == OPPOSITE(turn)) score += medium;
+    if (board[BOARDSIZE-2][i] == turn) score -= medium;
+    else if (board[BOARDSIZE-2][i] == OPPOSITE(turn)) score += medium;
+    if (board[i][BOARDSIZE-2] == turn) score -= medium;
+    else if (board[i][BOARDSIZE-2] == OPPOSITE(turn)) score += medium;
+  }
+
+  for (int i = 2 ; i < BOARDSIZE-3 ; ++i) {
+    for (int j = 2 ; j < BOARDSIZE-3 ; ++j) {
+      if (board[i][j] == turn) score += small;
+      else if (board[i][j] == OPPOSITE(turn)) score -= small;
+    }
+  }
+  return score;
+}
+
+void Board::copyto(int b[BOARDSIZE][BOARDSIZE]) const {
   for (int i = 0 ; i < BOARDSIZE ; ++i) {
     for (int j = 0 ; j < BOARDSIZE ; ++j) {
       b[i][j] = board[i][j];

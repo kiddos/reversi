@@ -47,7 +47,7 @@ void AITrainer::train(const int ninstances, const int iterations) {
       // retreieve record
       for (uint32_t j = 0 ; j < records.size(); ++j) {
         int* input = new int[AI::INPUT_NODES];
-        AI::toinput(records[j].state, records[j].move, records[j].turn, input);
+        AI::toinput(records[j].state, records[j].turn, input);
         for (int k = 0 ; k < AI::INPUT_NODES ; ++k) {
           trainingdata(j, k) = input[k];
         }

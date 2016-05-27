@@ -1,6 +1,7 @@
 set(SOURCE main.cpp window.cpp board.cpp game.cpp ai.cpp aitrainer.cpp)
+set(HEADER window.h board.h game.h ai.h aitrainer.h)
 set(NNET_SOURCE nnet/act.cpp nnet/layer.cpp nnet/nnet.cpp)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DDEBUG -g -O3 -Wall -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -DDEBUG -g -O3 -Wall -Wextra -fopenmp")
 set(ALLEGRO_LIBS allegro allegro_primitives allegro_ttf allegro_font)
 set(NNET_LIBS armadillo)
 

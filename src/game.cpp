@@ -40,7 +40,7 @@ bool Game::playerinput(const Move m) {
 }
 
 bool Game::airespond(bool smart) {
-  Move m = ai.decidemove(board, smart);
+  Move m = ai.decidemove(board, smart, true);
   if (board.isvalidmove(m)) {
     // add record
     Record r(board, m, board.getturn());
@@ -89,7 +89,7 @@ void Game::saverecords(bool readable) const {
       int b[BOARDSIZE][BOARDSIZE] = {{0}};
       output << (records[i].turn == Board::WHITE ? "white" : "black");
       output << ": " << records[i].move.x << ", " << records[i].move.y << endl;
-      records[i].state.copyboard(b);
+      records[i].state.copyto(b);
       for (int i = 0 ; i < BOARDSIZE ; ++i) {
         for (int j = 0 ; j < BOARDSIZE ; ++j) {
           if (b[i][j] == Board::WHITE)
@@ -111,7 +111,7 @@ void Game::saverecords(bool readable) const {
     int winner = getwinner();
     for (size_t i = 0 ; i < records.size() ; ++i) {
       int* input = new int[AI::INPUT_NODES];
-      AI::toinput(records[i].state, records[i].move, records[i].turn, input);
+      AI::toinput(records[i].state, records[i].turn, input);
       for (int i = 0 ; i < AI::INPUT_NODES ; ++i) {
         output << input[i] << " ";
       }

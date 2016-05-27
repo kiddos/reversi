@@ -200,7 +200,7 @@ void Window::render() {
   scorepanel.render();
 
   // draw the disc
-  game.getboard().copyboard(dboard);
+  game.getboard().copyto(dboard);
   const double DISCSIZE = BOX * 0.5 * 0.8;
   for (int i = 0 ; i < BOARDSIZE ; ++i) {
     const double shifty = i * BOX + PADDING + BOX / 2;
@@ -245,6 +245,7 @@ bool Window::mainloop() {
         if (game.playerinput(mouse.getmove())) {
           // AI decision
           // may take long
+          cout << "ai respond" << endl;
           game.airespond(true);
         }
 
