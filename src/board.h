@@ -29,6 +29,7 @@ class Board {
   bool perform(const Move m);
   bool changeturn();
   double eval() const;
+  double eval(int t) const;
 
   void copyto(int board[BOARDSIZE][BOARDSIZE]) const;
   void quickdisplay() const;
