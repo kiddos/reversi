@@ -69,50 +69,78 @@ Move AI::decidemove(const Board& current, bool smart, bool output) {
   }
 }
 
+double AI::min(vector<double>& values, vector<int>& index) {
+  double minval = values[0];
+  for (uint32_t i = 1 ; i < values.size() ; ++i) {
+    if (values[i] < minval) {
+      minval = values[i];
+    }
+  }
+  for (uint32_t i = 0 ; i < values.size() ; ++i) {
+    if (values[i] == minval) {
+      index.push_back(i);
+    }
+  }
+  return minval;
+}
+
+double AI::max(vector<double>& values, vector<int>& index) {
+  double maxval = values[0];
+  for (uint32_t i = 1 ; i < values.size() ; ++i) {
+    if (values[i] > maxval) {
+      maxval = values[i];
+    }
+  }
+  for (uint32_t i = 0 ; i < values.size() ; ++i) {
+    if (values[i] == maxval) {
+      index.push_back(i);
+    }
+  }
+  return maxval;
+}
+
 double AI::minimax(const Board& b, int& whichmove, int level) {
   if (level <= 0) {
     vector<Move> validmoves = b.getvalidmoves();
     if (validmoves.size() > 0) {
-      Move m = validmoves[0];
-      Board simboard = b;
-      simboard.perform(m);
-      const Board target = simboard;
-      whichmove = 0;
-      double minval = eval(target);
-
-      for (uint32_t i = 1 ; i < validmoves.size() ; ++i) {
-        m = validmoves[i];
-        simboard = b;
+      vector<double> values;
+      vector<int> index;
+      for (uint32_t i = 0 ; i < validmoves.size() ; ++i) {
+        Move m = validmoves[i];
+        Board simboard = b;
         simboard.perform(m);
-        double val = eval(simboard);
-        if (val < minval) {
-          minval = val;
-          whichmove = i;
-        }
+        values.push_back(eval(simboard));
+
+        // simboard.quickdisplay();
+        // cout << "level: " << level;
+        // cout << " | score: " << values[i] << endl;
       }
-      return minval;
+
+      const double val = min(values, index);
+      whichmove = index[rand() % index.size()];
+      return val;
     }
   } else {
     vector<Move> validmoves = b.getvalidmoves();
     if (validmoves.size() > 0) {
-      Board simboard = b;
-      Move m = validmoves[0];
-      simboard.perform(m);
-      int nextmove = 0;
-      double minval = minimax(simboard, nextmove, level-1);
-      whichmove = 0;
-
-      for (uint32_t i = 1 ; i < validmoves.size() ; ++i) {
-        simboard = b;
-        m = validmoves[0];
+      vector<double> values;
+      vector<int> index;
+      for (uint32_t i = 0 ; i < validmoves.size() ; ++i) {
+        int nextmove = 0;
+        Board simboard = b;
+        Move m = validmoves[i];
         simboard.perform(m);
-        const double val = minimax(simboard, nextmove, level-1);
-        if (val < minval) {
-          whichmove = i;
-          minval = val;
-        }
+        values.push_back(minimax(simboard, nextmove, level-1));
       }
-      return minval;
+
+      double val = 0;
+      if (level % 2 == 1) {
+        val = max(values, index);
+      } else {
+        val = min(values, index);
+      }
+      whichmove = index[rand() % index.size()];
+      return val;
     }
     return 0;
   }

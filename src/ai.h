@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 
 #include "board.h"
 #include "nnet/nnet.h"
@@ -29,6 +30,8 @@ class AI {
 
  private:
   double minimax(const Board& current, int& whichmove, int level);
+  double min(std::vector<double>& values, std::vector<int>& index);
+  double max(std::vector<double>& values, std::vector<int>& index);
   Board current;
   nn::NeuralNet nnet;
   bool loaded;
